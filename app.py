@@ -25,6 +25,9 @@ def add_cors(response):
     "GET", "POST", "PUT", "DELETE", "OPTIONS"
 ])
 def routes(path):
+    if path == "":
+        return make_response("st3pa")
+
     if path == "login":
         response = make_response("st3pa")
         response.headers["Content-Type"] = "text/plain; charset=UTF-8"
@@ -33,8 +36,11 @@ def routes(path):
     if path == "promise":
         code = """function task(x) {
     return new Promise((resolve, reject) => {
-        if (x < 18) resolve('yes');
-        else reject('no');
+        if (x < 18) {
+            resolve('yes');
+        } else {
+            reject('no');
+        }
     });
 }"""
         response = make_response(code)
@@ -44,7 +50,10 @@ def routes(path):
     if path == "fetch":
         html = """<!DOCTYPE html>
 <html>
-<head><meta charset="UTF-8"><title>Fetch</title></head>
+<head>
+<meta charset="UTF-8">
+<title>Fetch</title>
+</head>
 <body>
 <input id="inp" type="text">
 <button id="bt" type="button">Fetch</button>
@@ -66,18 +75,12 @@ document.getElementById('bt').addEventListener('click', async () => {
         return response
 
     if path == "result4":
-        if request.method == "OPTIONS":
-            return make_response("", 200)
-
         result = {
             "message": "st3pa",
             "x-result": request.headers.get("x-test"),
             "x-body": request.get_data(as_text=True)
         }
-        response = make_response(
-            json.dumps(result, ensure_ascii=False),
-            200
-        )
+        response = make_response(json.dumps(result), 200)
         response.headers["Content-Type"] = "application/json"
         return response
 
