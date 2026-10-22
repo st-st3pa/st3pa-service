@@ -1,4 +1,4 @@
-
+ 
 from flask import Flask, make_response, request
 import json
 
@@ -25,6 +25,7 @@ def add_cors(response):
     "GET", "POST", "PUT", "DELETE", "OPTIONS"
 ])
 def routes(path):
+    path = path.rstrip("/")
     if path == "":
         return make_response("st3pa")
 
@@ -74,7 +75,7 @@ document.getElementById('bt').addEventListener('click', async () => {
         response.headers["Content-Type"] = "text/html; charset=UTF-8"
         return response
 
-    if path == "result4":
+    if path.rstrip("/") == "result4":
         result = {
             "message": "st3pa",
             "x-result": request.headers.get("x-test"),
