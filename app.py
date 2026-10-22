@@ -84,7 +84,7 @@ document.getElementById('bt').addEventListener('click', async () => {
         response.headers["Content-Type"] = "application/json"
         return response
 
-    return make_response("Not Found", 404)
+    return make_response("PATH RECEIVED: " + repr(path), 200)
 
 
 if __name__ == "__main__":
