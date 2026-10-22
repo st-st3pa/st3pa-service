@@ -1,5 +1,7 @@
- 
+
 from flask import Flask, make_response, request
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import json
 
 app = Flask(__name__)
@@ -25,15 +27,38 @@ def add_cors(response):
     "GET", "POST", "PUT", "DELETE", "OPTIONS"
 ])
 def routes(path):
-    path = path.rstrip("/")
+    path = path.strip("/")
+
+    if request.method == "OPTIONS":
+        return make_response("", 200)
+
+    # Корневой маршрут
     if path == "":
         return make_response("st3pa")
 
+    # Логин
     if path == "login":
         response = make_response("st3pa")
         response.headers["Content-Type"] = "text/plain; charset=UTF-8"
         return response
 
+    # Текущий час по московскому времени
+    if path == "hour":
+        hour = datetime.now(
+            ZoneInfo("Europe/Moscow")
+        ).strftime("%H")
+        response = make_response(hour)
+        response.headers["Content-Type"] = "text/plain; charset=UTF-8"
+        return response
+
+    # Практическое задание 2: функция task
+    if path == "sample":
+        code = "function task(x) { return x * this * this; }"
+        response = make_response(code)
+        response.headers["Content-Type"] = "text/plain; charset=UTF-8"
+        return response
+
+    # Практическое задание 3: промис
     if path == "promise":
         code = """function task(x) {
     return new Promise((resolve, reject) => {
@@ -48,6 +73,7 @@ def routes(path):
         response.headers["Content-Type"] = "text/plain; charset=UTF-8"
         return response
 
+    # Практическое задание 3: страница fetch
     if path == "fetch":
         html = """<!DOCTYPE html>
 <html>
@@ -75,7 +101,8 @@ document.getElementById('bt').addEventListener('click', async () => {
         response.headers["Content-Type"] = "text/html; charset=UTF-8"
         return response
 
-    if path.rstrip("/") == "result4":
+    # Практическое задание 4: JSON
+    if path == "result4":
         result = {
             "message": "st3pa",
             "x-result": request.headers.get("x-test"),
@@ -85,7 +112,7 @@ document.getElementById('bt').addEventListener('click', async () => {
         response.headers["Content-Type"] = "application/json"
         return response
 
-    return make_response("PATH RECEIVED: " + repr(path), 200)
+    return make_response("Not Found", 404)
 
 
 if __name__ == "__main__":
